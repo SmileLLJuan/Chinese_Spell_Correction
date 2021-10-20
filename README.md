@@ -16,3 +16,9 @@
 2、soft masked bert文本纠错 复现
 - code 代码
    - softMaskBert  softMaskedBert 算法复现
+   
+   
+参考：
+[1]基于规则 https://github.com/hiyoung123/YoungCorrector
+[2] FASPell CSC
+[3] 
