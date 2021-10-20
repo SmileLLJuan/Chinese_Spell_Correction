@@ -8,11 +8,28 @@ import pinyin
 import jieba
 import string
 import re,os
+from collections import Counter
 
 FILE_PATH = os.path.abspath("../../data/words_info/token_freq_pos_jieba.txt")
 PUNCTUATION_LIST = string.punctuation
-PUNCTUATION_LIST += "。，？：；｛｝［］‘“”《》／！％……（）"
+PUNCTUATION_LIST += "。，？：；｛｝［］‘“”《》／！％……（）\\n、 "
+print(PUNCTUATION_LIST)
+# 创建词频字典
+def create_frequent_dict(dir_path):
+    words=[]
+    for file_name in os.listdir(dir_path):
+        if file_name.find(".txt") != -1:
+            file_path = "/".join([dir_path, file_name])
+            with open(file_path, "r") as f:
+                lines=f.readlines()
+                for line in lines:
+                    words.extend([w for w in jieba.cut(line) if w not in PUNCTUATION_LIST])
+    print(len(words),words[:10])
+    words_dict=Counter(words)
+    del words
+    print(len(words_dict),words_dict)
 
+# 读取 词语 词频 字典
 def construct_dict(file_path):
     word_freq = {}
     with open(file_path, "r") as f:
@@ -21,7 +38,6 @@ def construct_dict(file_path):
             word = info[0]
             frequency = info[1]
             word_freq[word] = frequency
-
     return word_freq
 
 
@@ -105,11 +121,13 @@ phrase_freq = construct_dict(FILE_PATH)
 根据拼音对词语换个词语词典提取候选词语
 根据phrase_freq（语料中词语出现的频率）取频率最高的同音词语作为纠错的词语
 '''
-def main():
+def test():
     texts=["机七学习是人工智能领遇最能体现智能的一个分知！",'杭洲是中国的八大古都之一，因风景锈丽，享有"人间天棠"的美誉！',
            "请帮我打开四好屏幕"]
     for text in texts:
         correct_sent = auto_correct_sentence(text)
         print(text,correct_sent)
+def main():
+    create_frequent_dict("../../data/cn_texts")
 if __name__ == "__main__":
     main()
